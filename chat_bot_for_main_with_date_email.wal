@@ -1,0 +1,105 @@
+
+	¥4üøóvâE∂oñtW‚≤qÓ:defVar --name culture --type Language
+defVar --name bot_name --type String --value sushant
+defVar --name options --type List --innertype String --value "[Ticket_booking,exit]"
+defVar --name option --type String
+defVar --name exit_con --type Boolean --value False
+defVar --name aadhaar_number --type String
+defVar --name success --type Boolean
+defVar --name demo_dot_jar --type Window
+defVar --name doses --type String --value no
+defVar --name database_dot_jar --type Window
+defVar --name chromeInstance --type String --value chromeInstance
+defVar --name OTBS_choice --type String
+defVar --name cur_date --type DateTime
+defVar --name date_of_vaccination_string --type String
+defVar --name date_of_vaccination --type DateTime
+defVar --name date_diff --type TimeSpan
+defVar --name if_date_less_var --type Boolean
+defVar --name emailcon --type EmailConnection
+defVar --name otp --type Numeric
+defVar --name category --type List --innertype String --value "[main]"
+defVar --name user_entered_otp --type String
+defVar --name email_id_list --type List --innertype String
+defVar --name email_id --type String
+createLanguage --culture "en-US" culture=value
+botConnect --type "Chat" --language ${culture} --autoanswer  --timeout "00:10:00"
+	logMessage --message "connected\r\n" --type "Info"
+	botSay --language ${culture} --text "NAMASTE!! I am  your AI assistant.\r\n# Sushant\r\n I would be happy to assist you .\r\n How may i help you?"
+	repeat
+		botAskList --names ${options} --beep  --language ${culture} --text "Please choose an option" --timeout "00:10:00" option=value
+		setVarIf --variablename "${exit_con}" --value true --left "${option}" --operator "Equal_To" --right exit
+		if --left "${option}" --operator "Equal_To" --right ticket_booking
+			botSay --language ${culture} --text "In order to proceed furthur, Please ENTER your  Aadhaar number . "
+			setVarIf --variablename "${aadhaar_number}" --left "${aadhaar_number}" --operator "Is_Null" --negate 
+			while --left "${aadhaar_number}" --operator "Is_Null"
+				botAsk --beep  --language ${culture} --text "Please enter your aadhaar number without spaces" --timeout "00:00:10" aadhaar_number=value success=success
+			endWhile
+			delay --timeout "00:00:02"
+			launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\chatbot 2.2\\dist\\ChatBot.jar" database_dot_jar=value
+			//showWindow
+			setValue --value "${aadhaar_number}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[3]"
+			click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+			getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/label[2]" email_id=value
+			insert --index 1 --value "${email_id}" --collection "${email_id_list}"
+			logMessage --message "the email-${email_id}\r\nlist is ${email_id_list}" --type "Info"
+			getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]" date_of_vaccination_string=value
+			getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[2]" doses=value
+			delay --timeout "00:00:01"
+			click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[2]"
+			delay --timeout "00:00:05"
+			closeWindow --window ${database_dot_jar}
+			if --left "${date_of_vaccination_string}" --operator "Equal_To" --right INVALID
+				botSay --language ${culture} --text "you have entered invalid aadhaar . please enter again"
+				botSay --language ${culture} --text "the process will start again\r\n"
+				delay --timeout "00:00:01"
+				botSay --language ${culture} --text "NAMASTE!! I am  your AI assistant.\r\n# Sushant\r\n I would be happy to assist you .\r\n How may i help you?"
+				continue
+			elseIf --left "${doses}" --operator "Less_Than_Equal_To" --right 1
+				botSay --language ${culture} --text "Please Be a responsible citizen and get yourself vaccinated. \r\nWe are redirecting you to the COWIN website where you can register yourself for the vaccination available near you."
+				delay --timeout "00:00:04"
+				setVarIf --variablename "${exit_con}" --value "true\r\n" --left "${doses}" --operator "Equal_To" --right no
+				webStart --name "${chromeInstance}" --type "Chrome"
+				webNavigate --url "https://www.cowin.gov.in/#skip_to_main"
+				webClose --name "${chromeInstance}" --leavebrowseropen 
+			elseIf --left "${doses}" --operator "Greater_Than" --right 1
+				botSay --language ${culture} --text "# VOILLA! you are vaccinated . \r\n"
+				textToDateTime --text "${date_of_vaccination_string}" --culture "en-US" date_of_vaccination=value
+				getCurrentDateAndTime --localorutc "LocalTime" --getcurrentdateonly  cur_date=value
+				logMessage --message "calculating date difff" --type "Info"
+				dateDifference --subtractdate ${date_of_vaccination} --fromdate ${cur_date} date_diff=value
+				logMessage --message "calculated...." --type "Info"
+				//delay --timeout "00:00:02"
+				logMessage --message "the vaccination date is ${date_of_vaccination}\r\ncurrent date is ${cur_date}\r\nthe date diff is ${date_diff}" --type "Info"
+				logMessage --message "no of days are : ${date_diff.Days}" --type "Info"
+				if --left "${date_diff.Days}" --operator "Less_Than" --right 14
+					botSay --language ${culture} --text "Sorry , it has not been 14 days since you are vaccinated. \r\nit is hereby informed that anyone must not travel within 14 days of vaccination.\r\nRe-plan after some days."
+					delay --timeout "00:00:05"
+					logMessage --message "bhai abhi 15 din nhi hue he\r\n" --type "Warning"
+					continue
+				endIf
+				smtpConnect --smtphost "smtp.gmail.com" --smtpport 465 --smtpusername "ibmb7188@gmail.com" --smtppassword "ibmbot123*" --smtpusessl  emailcon=value
+				generateRandomNumber --minimum 10000 --maximum 99999 otp=value
+				emailSend --connection ${emailcon} --to ${email_id_list} --from "ibmb7188@gmail.com" --subject "otp verification " --bodytype "Text" --body "your otp for vaccination verification is : ${otp}" --labels ${category}
+				botAsk --retry  --attempts 3 --beep  --language ${culture} --text "ENTER OTP" --timeout "00:00:05" user_entered_otp=value
+				if --left "${otp}" --operator "Equal_To" --right "${user_entered_otp}"
+					botAsk --beep  --language ${culture} --text "Which one do you want to do:\r\na.  book a movie ticket\r\nb.  book a hotel room\r\n\r\nTYPE THE OPTION!" --timeout "00:01:00" OTBS_choice=value
+					webStart --name "${chromeInstance}" --type "Chrome"
+					if --left "${OTBS_choice}" --operator "Equal_To" --right a
+						webNavigate --url "https://in.bookmyshow.com/explore/home/chennai"
+					elseIf --left "${OTBS_choice}" --operator "Equal_To" --right b
+						webNavigate --url "https://www.trivago.in/"
+					endIf
+					webClose --name "${chromeInstance}" --leavebrowseropen 
+				else
+					botSay --language ${culture} --text "you have entered wrong otp! \r\nplease try again from beginning"
+					continue
+				endIf
+			endIf
+			//getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[3]" name_val=value
+			//delay --timeout "00:00:02"
+		endIf
+		//botSay --language ${culture} --text "${name_val} is the number displayed"
+		//delay --timeout "00:00:02"
+	until --left "${exit_con}" --operator "Is_True" --negate 
+botDisconnect"	ùJªÎ»RÏAÆ5Õ2‹t˝*	20.12.5.0

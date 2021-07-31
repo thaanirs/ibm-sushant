@@ -1,0 +1,58 @@
+Ç!defVar --name culture --type Language
+defVar --name bot_name --type String --value sushant
+defVar --name name_val --type String
+defVar --name options --type List --innertype String --value "[OTBS,exit]"
+defVar --name option --type String
+defVar --name exit_con --type Boolean --value True
+defVar --name aadhaar_number --type String
+defVar --name success --type Boolean
+defVar --name demo_dot_jar --type Window
+defVar --name if_vaccinated --type String --value no
+defVar --name database_dot_jar --type Window
+defVar --name chromeInstance --type String --value chromeInstance
+defVar --name OTBS_choice --type String
+defVar --name cur_date --type DateTime
+createLanguage --culture "en-US" culture=value
+botConnect --type "Chat" --language ${culture} --autoanswer 
+	//launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\chat_retrieve\\Database.jar" --timeout "00:01:00"
+	//setValue --value 12345 --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[3]"
+	botSay --language ${culture} --text "NAMASTE!! I am ${bot_name}  , your AI assistant.\r\n# I would be happy to assist you .\r\nHow may i help you?"
+	repeat
+		botAskList --names ${options} --beep  --language ${culture} --text "Please choose an option" --timeout "00:10:00" option=value
+		setVarIf --variablename "${exit_con}" --value true --left "${option}" --operator "Equal_To" --right exit
+		if --left "${option}" --operator "Equal_To" --right OTBS
+			botSay --language ${culture} --text "In order to proceed furthur, Please ENTER your  Aadhaar number . "
+			botAsk --beep  --language ${culture} --text "Please enter your aadhaar number without spaces" aadhaar_number=value success=success
+			delay --timeout "00:00:10"
+			launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\chat_retrieve\\Database.jar" --timeout "00:05:00" database_dot_jar=value
+			//showWindow
+			setValue --value "${aadhaar_number}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --simulatehuman  --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]"
+			click --selector "XPath" --controlsimilarity 100 --simulatehuman  --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+			getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[2]" if_vaccinated=value
+			if --left "${if_vaccinated}" --operator "Equal_To" --right 0
+				botSay --language ${culture} --text "Please Be a responsible citizen and get yourself vaccinated. \r\nWe are redirecting you to the COWIN website where you can register yourself for the vaccination available near you."
+				delay --timeout "00:00:03"
+				setVarIf --variablename "${exit_con}" --value "true\r\n" --left "${if_vaccinated}" --operator "Equal_To" --right no
+				webStart --name "${chromeInstance}" --type "Chrome"
+				webNavigate --url "https://www.cowin.gov.in/home"
+				webClose --name "${chromeInstance}"
+			elseIf --left "${if_vaccinated}" --operator "Greater_Than" --right 0
+				botSay --language ${culture} --text "VOILLA! you are vaccinated . \r\nyou will be redirected to the site shortly"
+				getCurrentDateAndTime --localorutc "LocalTime" --getcurrentdateonly  cur_date=value
+				delay --timeout "00:00:02"
+				webStart --name "${chromeInstance}" --type "Chrome"
+				botAsk --beep  --language ${culture} --text "Which one do you want to do:\r\na.  book a movie ticket\r\nb.  book a hotel room\r\n\r\nTYPE THE OPTION!" --timeout "00:01:00" OTBS_choice=value
+				if --left "${OTBS_choice}" --operator "Equal_To" --right a
+					webNavigate --url "https://in.bookmyshow.com/explore/home/chennai"
+				elseIf --left "${OTBS_choice}" --operator "Equal_To" --right b
+					webNavigate --url "https://www.trivago.in/"
+				endIf
+				webClose --name "${chromeInstance}" --leavebrowseropen 
+			endIf
+			//getValue --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[3]" name_val=value
+			//delay --timeout "00:00:02"
+			//botSay --language ${culture} --text "${name_val} is the number displayed"
+			//delay --timeout "00:00:02"
+		endIf
+	until --left "${exit_con}" --operator "Is_True" --negate 
+botDisconnect*	20.12.5.0

@@ -1,0 +1,5 @@
+ÙdefVar --name emailcon --type EmailConnection
+defVar --name destinatarymail --type List --innertype String --value "[kkankariya27012002@gmail.com,ibmb7188@gmail.com]"
+defVar --name category --type List --innertype String --value "[main]"
+smtpConnect --smtphost "smtp.gmail.com" --smtpport 465 --smtpusername "ibmb7188@gmail.com" --smtppassword "ibmbot123*" --smtpusessl  emailcon=value
+emailSend --connection ${emailcon} --to ${destinatarymail} --from "ibmb7188@gmail.com" --subject ibm_mail_try --bodytype "Text" --body "this is the first smtp mail sent by rpa to you bruh!!" --labels ${category}*	20.12.5.0

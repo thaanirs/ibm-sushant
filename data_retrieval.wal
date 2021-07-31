@@ -1,0 +1,23 @@
+
+	éÀC	 4G¡ÿ`içßimport --name image1 --type "Image" --content iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAACBSURBVDhPY3whqPyfgQLABKXJBqMGDFoDhA5sYuCMCoby8AOsBnyftZCBb0onUYYwl3AKNUDZcPDn8nWGf4+fgg0B0SA+LoDVABAgxhCQC3EaAAL4DAFpBonjNQAEsBkC0/wpp5yBBaoOL/i+bC2YBmmC0SDNIHGSsjOyzRBDGRgAjZJT/DR5ut8AAAAASUVORK5CYII=
+import --name image2 --type "Image" --content iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAABWSURBVChTY3whqPyfgQjABKUJAtIVCh3YxMAZFQzlYQK4wu+zFjLwTenEqZgFSjN8X7YWTIMUgwCMDwNwhSCATzGKQhDApRhDIQhgU4xVIQigKmZgAAByeCL304+hfgAAAABJRU5ErkJggg==
+defVar --name database --type DataTable
+defVar --name database_window --type Window
+defVar --name adhar_number --type String
+defVar --name iterator --type Numeric --value 1
+//defVar --name database_window --type Window
+readCSV --filepath "C:\\Users\\naras\\Desktop\\ibm\\trail_database.csv" --delimiter "," --hasheaders  --missingfieldaction "ParseError" database=value
+launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\dataretrieval_version 4.1\\dist\\Database.jar" --timeout "00:00:03" database_window=value
+for --variable ${iterator} --from 1 --to ${database.Rows} --step 1
+	mapTableRow --dataTable ${database} --row ${iterator} --mappings "number=1=${adhar_number}"
+	//setValue --value "${adhar_number}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --simulatehuman  --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]"
+	//click --selector "XPath" --controlsimilarity 100 --simulatehuman  --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+	//click --selector "XPath" --controlsimilarity 100 --simulatehuman  --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[2]"
+	//logMessage --message "your aadhaar number is :  ${adhar_number}" --type "Info"
+	setValue --value "${adhar_number}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]"
+	click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+	delay --timeout "00:00:04"
+	click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[2]"
+	delay --timeout "00:00:02"
+next
+closeWindow --window ${database_window}"	W®ÜÁ:sL²ë°´F8*	20.12.5.0

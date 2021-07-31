@@ -1,0 +1,27 @@
+ñdefVar --name databaseTable --type DataTable
+defVar --name row_iterator --type Numeric --value 1
+defVar --name firstname --type String
+defVar --name lastname --type String
+defVar --name gender --type String
+defVar --name DOB_text --type String
+defVar --name DOB_DateTime --type DateTime
+defVar --name DOB_format --type String --value "dd/MM/yyyy"
+defVar --name DOB_converted --type String
+readCSV --filepath "C:\\Users\\naras\\Desktop\\trail_database.csv" --delimiter "," --hasheaders  --missingfieldaction "ParseError" databaseTable=value
+webStart --name web01 --type "Chrome"
+for --variable ${row_iterator} --from 1 --to ${databaseTable.Rows} --step 1
+	webNavigate --url "https://www.surveymonkey.com/r/DSVYXSD"
+	mapTableRow --dataTable ${databaseTable} --row ${row_iterator} --mappings "number=1=${firstname},number=2=${lastname},number=3=${gender},number=4=${DOB_text}"
+	webSet --value "${firstname}" --selector "CssSelector" --css "#\\35 49616032" --simulatehuman 
+	webSet --value "${lastname}" --selector "CssSelector" --css "#\\35 49616103" --simulatehuman 
+	if --left "${gender}" --operator "Equal_To" --right male
+		webClick --selector "CssSelector" --css "#\\35 49616311_3625690506_label > span.radio-button-label-text.question-body-font-theme.user-generated" --simulatehuman 
+	elseIf --left "${gender}" --operator "Equal_To" --right female
+		webClick --selector "CssSelector" --css "#\\35 49616311_3625690505_label > span.radio-button-label-text.question-body-font-theme.user-generated" --simulatehuman 
+	endIf
+	textToDateTime --text "${DOB_text}" DOB_DateTime=value
+	dateTimeToText --date "${DOB_DateTime}" --usecustomformat  --customformat "${DOB_format}" --culture "en-US" DOB_converted=value
+	webSet --value "${DOB_converted}" --selector "CssSelector" --css "#\\35 49616621_3625692067_DMY" --simulatehuman 
+	webClick --selector "CssSelector" --css "#patas > main > article > section > form > div.survey-submit-actions.center-text.clearfix > button" --simulatehuman 
+next
+webClose --name web01*	20.12.5.0

@@ -1,0 +1,23 @@
+
+	GŸIJ‘G=Cèo)~ÈjëdefVar --name databaseTable --type DataTable
+defVar --name row_iterator --type List --innertype String
+defVar --name name --type String
+defVar --name adhar --type String
+defVar --name doses --type String
+defVar --name row_counter --type Numeric --value 1
+defVar --name window_opened --type Boolean
+defVar --name data_entry_var --type Window
+defVar --name date_of_vaccination --type String
+readCSV --filepath "C:\\Users\\naras\\Desktop\\ibm\\DATABASE.csv" --delimiter "," --hasheaders  --missingfieldaction "ParseError" databaseTable=value
+launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\adding\\dist\\demo.jar" --timeout "00:05:00" data_entry_var=value window_opened=success
+for --variable ${row_counter} --from 1 --to ${databaseTable.Rows} --step 1
+	mapTableRow --dataTable ${databaseTable} --row ${row_counter} --mappings "number=2=${name},number=3=${adhar},number=4=${doses},number=5=${date_of_vaccination}"
+	setValue --value "${name}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[3]"
+	setValue --value "${adhar}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]"
+	setValue --value "${doses}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[2]"
+	setValue --value "${date_of_vaccination}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[4]"
+	click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+	click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[2]"
+	//delay --timeout "00:00:00"
+next
+closeWindow --window ${data_entry_var}"	¥ıÕÉJô∑¿3–ì´~*	20.12.5.0

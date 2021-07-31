@@ -1,0 +1,22 @@
+Óimport --name image1 --type "Image" --content iVBORw0KGgoAAAANSUhEUgAAAP8AAAAZCAYAAAD+FfhVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAH3SURBVHhe7dwxbsIwGAXg1+5IOQNVu3RD4giWkDp1YM/WDWXqkAN0YEIMmbNnYEJCyhEisXUpIgsXyA1a25g0IUpVb8F+nxQ5mD8bP882EjidTt9VVekLAEeOHD0Z71Tzj0YjBEEAOSHnicgH92Zk4xN5pm5+lfxE5A8mP5GnmPxEnmLyE3mKyU/kKSY/kaeY/ESeYvITeYrJT+QpJj+Rp5j8RJ5i8pOb8kgHmr5EgtJM/1eZCPN8hNzM9bGpHRImPzkp36bmTio22Nl2vweY/OSgHM3el92PDbu/g8lPzimTJc69HyIM9Q2KeN2/JC8TRMJsEQKBKMlxNG912NQOXP1nHkRuKJGICeJC3oYZqsUBYhLL7FcvK6yELvqlzgbmrWXClRBZtYJ+zKb2BjD5yS3lDhvV6VL4IttwPMPr9Pw63V5nv/yiWF6aWTbuvtLb330WwjzSYFN7G7jnJ6eUu41OedWgqvdl92NWd/8SSXPr3/iimH4sIMbn+7FY4d1sF2o2tTeCyU8OybHW630lxVzvywNM6rn+g7/nR9PNxsNTf57b1A4Zk5/ckW/NQV+/Pw/+PMPkJ2e0ftvvlaKz9Zc+D+0VwfHrslrosqkdMiY/OaLx27465Zef5/aV4bI1rw/+GoeBRfxWnweUeYTOob5N7U0AfgBjHz1MbBU/4wAAAABJRU5ErkJggg==
+defVar --name dataentryApplet --type String
+defVar --name window_opened --type Boolean
+launchWindow --executablepath "C:\\Users\\naras\\Desktop\\ibm\\adding\\dist\\demo.jar" --timeout "00:05:00" window_opened=success
+logMessage --message "${window_opened}" --type "Info"
+delay --timeout "00:00:01"
+//setValue --value abc --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[3]"
+//setValue --value 9000 --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[1]"
+//setValue --value 1 --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/text[2]"
+//click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/push_button[1]"
+setValue --value abc --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[3]"
+logMessage --message "name_set\r\n" --type "Info"
+setValue --value 1000 --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[1]"
+logMessage --message "value-adhar number  set\r\n" --type "Info"
+setValue --value 2 --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[2]"
+logMessage --message "doses set" --type "Info"
+setValue --value "2021-07-10" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/text[4]"
+logMessage --message "date set" --type "Info"
+click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[1]"
+logMessage --message "added clicked" --type "Info"
+click --selector "XPath" --controlsimilarity 100 --xpath "/root/root_pane[1]/layered_pane[1]/panel[1]/panel[1]/push_button[2]"
+logMessage --message "cleared clicked" --type "Info"*	20.12.5.0

@@ -1,0 +1,62 @@
+ßdefVar --name fromCurrency --type String
+defVar --name toCurrency --type String
+defVar --name chromeInstance --type String --value chromeInstance
+defVar --name quotation --type String
+defVar --name isLoading --type Boolean
+defVar --name currentDateAndTime --type DateTime
+defVar --name myDocs --type String
+defVar --name culture --type Language
+defVar --name exit --type Boolean --value False
+defVar --name options --type List --innertype String --value "[convert a currency,exit]"
+defVar --name option --type String
+defVar --name success --type Boolean
+defVar --name dateText --type String
+defVar --name currentDateText --type String
+defVar --name currentTimeText --type String
+createLanguage --culture "en-US" culture=value
+botConnect --type "Chat" --language ${culture} --autoanswer 
+	botSay --language ${culture} --text "!hi there I am a bot"
+	botSay --language ${culture} --text "how can i help you?\r\n"
+	repeat
+		botAskList --names ${options} --beep  --language ${culture} --text "Please choose an option" --timeout "00:01:00" option=value
+		setVarIf --variablename "${exit}" --value true --left "${option}" --operator "Equal_To" --right exit
+		if --left "${option}" --operator "Equal_To" --right "convert a currency"
+			botAsk --beep  --language ${culture} --text "from which currency you want to convert" --timeout "00:01:00" fromCurrency=value success=success
+			if --left "${success}" --operator "Is_True" --negate 
+				continue
+			endIf
+			botAsk --beep  --language ${culture} --text "towhich currency you want to convert" --timeout "00:01:00" toCurrency=value success=success
+			if --left "${success}" --operator "Is_True" --negate 
+				continue
+			endIf
+			botSay --language ${culture} --text "Alright please wait for a while\r\n"
+			goSub --label convertCurrency
+			dateTimeToText --date "${currentDateAndTime}" --standardformat "ShortDate" --culture "en-US" currentDateText=value
+			dateTimeToText --date "${currentDateAndTime}" --standardformat "ShortTime" --culture "en-US" currentTimeText=value
+			botSay --language ${culture} --text "On ${currentDateText} at ${currentTimeText} the ${fromCurrency} to ${toCurrency} exchange rate is ${quotation} "
+			botSay --language ${culture} --text "Can i help you with anything else?"
+		endIf
+	until --left "${exit}" --operator "Is_True" --negate 
+	botSay --language ${culture} --text "Hope to see you again soon. BYE!!"
+	delay --timeout "00:00:10"
+botDisconnect
+beginSub --name convertCurrency
+//inputBox --title "from currency" --prompt "type here" --value BRL fromCurrency=value
+//inputBox --title "to currency" --prompt "type here" --value USD toCurrency=value
+webStart --name "${chromeInstance}" --type "Chrome"
+webNavigate --url "https://www1.oanda.com/currency/converter/"
+webSet --value "${fromCurrency}" --selector "Id" --id quote_currency_input --simulatehuman 
+webSendKeys --value "{ENTER}" --selector "Id" --id quote_currency_input
+webSet --value "${toCurrency}" --selector "Id" --id base_currency_input --simulatehuman 
+webSendKeys --value "{ENTER}" --selector "Id" --id base_currency_inpuT
+webWaitElement --selector "Id" --id preloader --timeout "00:00:05" isLoading=value
+while --left "${isLoading}" --operator "Is_True"
+	webWaitElement --selector "Id" --id preloader --timeout "00:00:05" isLoading=value
+endWhile
+webGet --selector "Id" --id base_amount_input quotation=value
+//logMessage --message "${quotation}" --type "Info"
+getCurrentDateAndTime --localorutc "LocalTime" currentDateAndTime=value
+//getSpecialFolder --folder "MyDocuments" myDocs=value
+//writeToFile --value "${currentDateAndTime} - 1 ${fromCurrency} is equals to ${quotation} ${toCurrency}" --file "${myDocs}\\quotation.txt" --encoding "UTF8" --writeasnewline 
+webClose --name "${chromeInstance}"
+endSub*	20.12.5.0
